@@ -25,37 +25,12 @@ export KCFLAGS="-w ${OPT_FLAGS}"
 
 JOBS=$(nproc)
 
-echo "=========================================="
-echo " Select Build Target Variant for OnePlus 6T"
-echo "=========================================="
-echo "1) High Performance Build (sdm845-perf_defconfig + enchilada.config)"
-echo "2) Menuconfig (Customize configuration before building)"
-echo "=========================================="
-read -rp "Enter choice [1-2]: " BUILD_CHOICE
-
 mkdir -p "$(pwd)/out"
 
 export MAKE_FLAGS="ARCH=${ARCH} CC=${CC} LD=${LD} AR=${AR} NM=${NM} OBJCOPY=${OBJCOPY} OBJDUMP=${OBJDUMP} STRIP=${STRIP} CLANG_TRIPLE=${CLANG_TRIPLE} CROSS_COMPILE=${CROSS_COMPILE}"
 
-case "${BUILD_CHOICE}" in
-    1)
-        echo "[+] Applying sdm845-perf_defconfig..."
-        make -C "$(pwd)" O="$(pwd)/out" vendor/sdm845-perf_defconfig ${MAKE_FLAGS}
-        echo "[+] Merging enchilada.config..."
-        make -C "$(pwd)" O="$(pwd)/out" vendor/enchilada.config ${MAKE_FLAGS}
-        ;;
-    2)
-        echo "[+] Applying base configurations..."
-        make -C "$(pwd)" O="$(pwd)/out" vendor/sdm845-perf_defconfig ${MAKE_FLAGS}
-        make -C "$(pwd)" O="$(pwd)/out" vendor/enchilada.config ${MAKE_FLAGS}
-        echo "[+] Launching menuconfig..."
-        make -C "$(pwd)" O="$(pwd)/out" menuconfig ${MAKE_FLAGS}
-        ;;
-    *)
-        echo "[-] Invalid option selected. Exiting."
-        exit 1
-        ;;
-esac
+echo "[+] Applying Shiro_defconfig..."
+make -C "$(pwd)" O="$(pwd)/out" Shiro_defconfig ${MAKE_FLAGS}
 
 echo "[+] Starting kernel compilation using ${JOBS} CPU threads..."
 make -C "$(pwd)" O="$(pwd)/out" -j"${JOBS}" ${MAKE_FLAGS}
